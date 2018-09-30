@@ -289,6 +289,13 @@ else:
         '%': VK_MENU,
     }
 
+    dw_extra_info = 0
+
+
+    def set_dw_extra_info(extra_info):
+        global dw_extra_info
+        dw_extra_info = extra_info
+
 
     class KeySequenceError(Exception):
 
@@ -344,10 +351,7 @@ else:
                 inp.ki.wVk = vk
                 inp.ki.wScan = scan
                 inp.ki.dwFlags |= flags
-                
-                # it seems to return 0 every time but it's required by MSDN specification
-                # so call it just in case
-                inp.ki.dwExtraInfo = GetMessageExtraInfo()
+                inp.ki.dwExtraInfo = dw_extra_info
 
             # if we are releasing - then let it up
             if self.up:
@@ -431,7 +435,7 @@ else:
             """Execute the action"""
             # it works more stable for virtual keys than SendInput
             for inp in self.GetInput():
-                win32api.keybd_event(inp.ki.wVk, inp.ki.wScan, inp.ki.dwFlags)
+                win32api.keybd_event(inp.ki.wVk, inp.ki.wScan, inp.ki.dwFlags, inp.ki.dwExtraInfo)
 
 
     class EscapedKeyAction(KeyAction):
@@ -458,7 +462,7 @@ else:
             """Execute the action"""
             # it works more stable for virtual keys than SendInput
             for inp in self.GetInput():
-                win32api.keybd_event(inp.ki.wVk, inp.ki.wScan, inp.ki.dwFlags)
+                win32api.keybd_event(inp.ki.wVk, inp.ki.wScan, inp.ki.dwFlags, inp.ki.dwExtraInfo)
 
 
     class PauseAction(KeyAction):

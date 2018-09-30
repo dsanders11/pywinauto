@@ -51,6 +51,12 @@ BUTTON_MAPPING = {'left': 0, 'middle': 1, 'right': 2, 'up_scroll': 3,
 
 
 if sys.platform == 'win32':
+    dw_extra_info = 0
+
+    def set_dw_extra_info(extra_info):
+        global dw_extra_info
+        dw_extra_info = extra_info
+
     def _perform_click_input(
         button="left",
         coords=(None, None),
@@ -150,7 +156,7 @@ if sys.platform == 'win32':
             y_res = win32functions.GetSystemMetrics(win32defines.SM_CYSCREEN)
             x_coord = int(float(coords[0]) * (65535. / float(x_res - 1)))
             y_coord = int(float(coords[1]) * (65535. / float(y_res - 1)))
-            win32api.mouse_event(dw_flags, x_coord, y_coord, dw_data)
+            win32api.mouse_event(dw_flags, x_coord, y_coord, dw_data, dw_extra_info)
         else:
             for event in events:
                 if event == win32defines.MOUSEEVENTF_MOVE:
@@ -160,11 +166,11 @@ if sys.platform == 'win32':
                     y_coord = int(float(coords[1]) * (65535. / float(y_res - 1)))
                     win32api.mouse_event(
                         win32defines.MOUSEEVENTF_MOVE | win32defines.MOUSEEVENTF_ABSOLUTE,
-                        x_coord, y_coord, dw_data)
+                        x_coord, y_coord, dw_data, dw_extra_info)
                 else:
                     win32api.mouse_event(
                         event | win32defines.MOUSEEVENTF_ABSOLUTE,
-                        coords[0], coords[1], dw_data)
+                        coords[0], coords[1], dw_data, dw_extra_info)
 
         time.sleep(Timings.after_clickinput_wait)
 
